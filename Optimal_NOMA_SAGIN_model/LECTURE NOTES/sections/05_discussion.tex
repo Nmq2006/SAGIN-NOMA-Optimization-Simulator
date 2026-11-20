@@ -1,0 +1,35 @@
+\section{Discussion \& In-Depth Evaluation}
+\label{sec:discussion}
+
+\subsection*{Physical Phenomenon Analysis \& Geometric SIC Boundary}
+
+The joint optimization results reflect the physical coupling between spatial geometry and the NOMA communication mechanism:
+\begin{itemize}
+    \item \textbf{Distance Loss Balancing Mechanism:} To minimize total network outage, the UAV descends toward the minimum permissible altitude ($z_{\min} = 0.20$) and swoops toward near user $D_2(1.0, 0)$. Approaching $D_2$ provides dual concurrent benefits: it substantially strengthens the average channel gain $\bar{g}_2$, making $D_2$'s signal detection and SIC decoding highly reliable, while allowing the UAV to concentrate the majority of its transmit power ($\alpha_1^* \approx 0.78 - 0.83$) toward far user $D_1(1.5, 0)$ to compensate for severe distance attenuation.
+    \item \textbf{Inactivity of the SIC Boundary at the Optimum:} Geometric constraint C4 ($x \le 1.21$) originates from the requirement to maintain the average channel gain hierarchy $\bar{g}_2 = d_{UD2}^{-\nu_{UD}} > \bar{g}_1 = d_{UD1}^{-\nu_{UD}}$, guaranteeing that the SIC decoding order is never inverted. In simulations, the optimal positions of both AO and DRL naturally converge around $x^* \approx 1.11$ (Static AO) and peak at $x_{\max} \approx 1.15$ (Dynamic AO). Hence, constraint C4 is an \textbf{inactive constraint} at the optimum: if the UAV were to push beyond $1.11$ toward $D_1$, the distance to $D_1$ would decrease, but the distance to $D_2$ would increase, causing $D_2$'s SIC decoding outage to surge. The system outage objective $OP_{\text{total}}$ inherently creates a natural restoring force, keeping the UAV stabilized in $x^* \in [1.10, 1.15]$ with a comfortable buffer of $0.06 - 0.10$ from the boundary, ensuring $0.0\%$ violation without artificial boundary clipping.
+\end{itemize}
+
+\subsection*{Role of Feeder Link (Satellite $\to$ UAV) and Channel Model}
+
+\begin{itemize}
+    \item \textbf{High Line-of-Sight (LoS) Feeder Link Characteristics:} Hop 1 utilizes a satellite-to-UAV link over generalized Rician fading with $K_{SU} = 5.0$ (direct LoS path dominantly overcomes scattering) combined with 3-UAV Partial Relay Selection (PRS) diversity.
+    \item \textbf{Hop 1 Reliability Dominates Hop 2:} Due to high LoS and 3-UAV PRS diversity, Hop 1 outage is vanishingly small ($P_{\text{out,Hop1}} \approx 10^{-5}$ at $\text{SNR} = 10$ dB and approaches $10^{-9}$ at $20$ dB). Consequently, the reliability bottleneck of the SAGIN-NOMA system is concentrated almost entirely in Hop 2 (Access Link)---where the UAV must partition finite power to simultaneously serve two ground users subject to fading and mutual NOMA interference. Optimizing Hop 2 trajectory and power allocation directly governs the system outage $OP_{\text{total}}$.
+    \item \textbf{Normalized Coordinate System and SNR Parameterization:} The satellite position at $(0, 1.0)$ is modeled in a normalized local airspace frame with scaling distance $D_0 = 125$ m, representing an illustrative zenith satellite beam angle. The horizontal axis in SNR plots represents the common normalized transmit SNR $\rho = \bar{\gamma}_S = \bar{\gamma}_U$.
+\end{itemize}
+
+\subsection*{Academic Comparison Between DRL and AO Algorithm}
+
+\begin{itemize}
+    \item \textbf{Benchmark Role of AO and Convergence of DRL:} Because the joint trajectory and power optimization problem \eqref{eq:opt_problem} is non-convex, the iterative SQP AO algorithm acts as the numerical benchmark bound. The DRL agent achieves an outage of $0.0197$, tightly hugging AO's $0.0206$.
+    \item \textbf{Nature of Numerical Discrepancy Between Methods:} Technical analysis reveals that the minor discrepancy in average outage ($0.0197$ vs $0.0206$) stems from time-slot evaluation conventions: (1) AO includes the fixed initial waypoint $\mathbf{q}_1 = \mathbf{q}_{\text{start}}(0.35, 0.50)$ where communication distance is greatest, yielding $OP[1] \approx 0.1008$; (2) DRL begins computing $OP$ after the first displacement step ($n = 1$ at $(0.47, 0.435)$), yielding $OP[1] \approx 0.0672$. When compared over steady cruise slots ($n = 5 \to 8$), AO achieves $OP \approx 0.0053$, slightly outperforming DRL ($0.0056 - 0.0060$), confirming that AO establishes the numerical bound while DRL attains a near-optimal approximation.
+    \item \textbf{Practical Significance of Ultra-Fast Inference Latency:} Under deterministic, static conditions, AO need only be computed once offline ($1.85$ s). However, in dynamic missions (e.g., roaming users, shifting waypoints), AO requires nearly 2 seconds per recalculation, disrupting flight control loops. In contrast, the DRL Actor infers adaptive actions in only $1.5$ ms/slot, ensuring real-time closed-loop flight control.
+\end{itemize}
+
+\subsection*{Limitations of the Model \& Objective Evaluation}
+
+To maintain rigorous scientific objectivity, we acknowledge current model limitations:
+\begin{itemize}
+    \item \textbf{Dimensionless 2D Geometric Plane:} Operational space is investigated in the vertical $(Oxz)$ plane with scaling factor $D_0 = 125$ m to isolate the fundamental physics of altitude-distance trade-offs and SIC boundaries, without modeling full 3D maneuvers or Earth curvature.
+    \item \textbf{Deterministic Channel Statistics Assumption:} The model assumes fixed statistical Rician parameters without simulating mechanical UAV displacement due to wind gusts or Imperfect Channel State Information (Imperfect CSI).
+    \item \textbf{DRL Training Scope:} The current DDPG model was trained at a nominal SNR of $20$ dB with a fixed random seed (seed 42) for reproducibility. Multi-SNR generalization and sweeps across multiple seeds represent important future avenues.
+\end{itemize}

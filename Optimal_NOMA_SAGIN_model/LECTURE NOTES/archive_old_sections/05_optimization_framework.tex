@@ -1,0 +1,41 @@
+\section{Hybrid Optimization Framework Design}
+\label{sec:framework_design}
+% =========================================================================
+
+We propose a hybrid optimization framework that integrates centralized numerical Alternating Optimization (AO) for theoretical benchmarking with distributed Deep Reinforcement Learning (DRL) for real-time mobile decision-making. The centralized AO decomposes problem \eqref{eq:opt_problem} into iterative subproblems to achieve the theoretical performance upper bound, while the DRL agent learns a continuous policy capable of millisecond inference.
+
+To resolve \eqref{eq:opt_problem} via numerical AO, we decouple the joint variables $(\mathbf{Q}, \boldsymbol{\alpha}_1)$ into two alternating subproblems:
+
+\subsection{Subproblem 1: Power Allocation with Fixed Trajectory}
+For a fixed trajectory $\mathbf{Q}^{(k)}$, the objective function is separable across the $N$ time slots. Thus, problem $(\mathcal{P})$ decomposes into $N$ independent scalar optimization subproblems:
+\begin{equation}
+    \alpha_1^*[n] = \arg\min_{\alpha_1[n] \in [\alpha_{1,\min} + 10^{-4}, \, 0.999]} OP_{\text{total}}(\alpha_1[n], \, \mathbf{q}_U^{(k)}[n]), \quad n = 1, \dots, N.
+\end{equation}
+Since each subproblem is strictly continuous and unimodal within the feasible domain, it is solved using the Golden Section Search method (\texttt{fminbnd}) with termination tolerance $10^{-4}$.
+
+\subsection{Subproblem 2: Trajectory Optimization with Fixed Power}
+For fixed power profile $\boldsymbol{\alpha}_1^{(k)}$, the trajectory optimization subproblem over vector $\mathbf{q} = [\mathbf{q}_U[1]^T, \dots, \mathbf{q}_U[N]^T]^T \in \mathbb{R}^{2N}$ is given by:
+\begin{equation}
+    \mathbf{Q}^{(k+1)} = \arg\min_{\mathbf{Q}} \frac{1}{N} \sum_{n=1}^N OP_{\text{total}}(\alpha_1^{(k)}[n], \, \mathbf{q}_U[n]) \quad \text{s.t.} \quad \eqref{eq:c1}-\eqref{eq:c4}.
+\end{equation}
+This constrained non-linear programming problem is resolved using Sequential Quadratic Programming (SQP) via \texttt{fmincon}. The complete procedure is summarized in Algorithm~\ref{alg:timeslot_ao}.
+
+\begin{algorithm}[t]
+\caption{Time-Slotted Alternating Optimization (Joint AO)}
+\label{alg:timeslot_ao}
+\begin{algorithmic}[1]
+\Require Initial trajectory $\mathbf{Q}^{(0)}$, initial power $\boldsymbol{\alpha}_1^{(0)}$, tolerance $\epsilon = 10^{-4}$, max iterations $K_{\max} = 20$.
+\State Compute initial cost $F^{(0)} = \frac{1}{N} \sum_{n=1}^N OP_{\text{total}}(\alpha_1^{(0)}[n], \mathbf{q}_U^{(0)}[n])$.
+\For{$k = 1, 2, \dots, K_{\max}$}
+    \State \textbf{Step 1 (Power Update):} Given $\mathbf{Q}^{(k-1)}$, solve $N$ scalar subproblems via Golden Section search to obtain $\boldsymbol{\alpha}_1^{(k)}$.
+    \State \textbf{Step 2 (Trajectory Update):} Given $\boldsymbol{\alpha}_1^{(k)}$, solve the $2N$-dimensional non-linear SQP problem to obtain $\mathbf{Q}^{(k)}$ and objective $F^{(k)}$.
+    \State \textbf{Step 3 (Convergence Test):}
+    \If{$|F^{(k)} - F^{(k-1)}| / (F^{(k-1)} + 10^{-8}) \le \epsilon$}
+        \State \textbf{break}; \Comment{Algorithm converged}
+    \EndIf
+\EndFor
+\State \Return Optimal trajectory $\mathbf{Q}^* = \mathbf{Q}^{(k)}$ and power allocation $\boldsymbol{\alpha}_1^* = \boldsymbol{\alpha}_1^{(k)}$.
+\end{algorithmic}
+\end{algorithm}
+
+% =========================================================================

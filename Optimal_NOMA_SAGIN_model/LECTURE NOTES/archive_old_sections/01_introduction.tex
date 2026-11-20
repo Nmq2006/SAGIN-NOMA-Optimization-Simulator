@@ -1,0 +1,18 @@
+\section{Introduction}
+\label{sec:intro}
+% =========================================================================
+
+The envisioned sixth-generation (6G) wireless communications mandate global coverage, ultra-high reliability, and massive connectivity, transcending the physical limitations of purely terrestrial infrastructures \cite{liu2018space, ding2017survey}. To achieve seamless connectivity across remote maritime, mountainous, and disaster-stricken territories, Space-Air-Ground Integrated Networks (SAGIN) have emerged as a foundational architecture \cite{zeng2019accessing}. Within SAGIN, low Earth orbit (LEO) satellites provide wide-area coverage, while Unmanned Aerial Vehicles (UAVs) serve as agile, flexible aerial relays to bridge the long propagation distance and compensate for severe atmospheric attenuation.
+
+Simultaneously, Non-Orthogonal Multiple Access (NOMA) has established itself as an indispensable spectral efficiency booster for multi-user scenarios \cite{ding2017survey}. By superposing user signals in the power domain and executing Successive Interference Cancellation (SIC) at the receiver side, NOMA enables concurrent transmission within identical time-frequency resource blocks. In satellite-assisted relaying, deploying NOMA allows an aerial relay to simultaneously serve terrestrial users with diverse channel conditions and quality-of-service (QoS) requirements.
+
+However, deploying UAV-assisted NOMA in SAGIN introduces multi-fold technical challenges:
+\begin{enumerate}
+    \item \textbf{Dual-Hop Fading Dynamics:} Satellite-to-air ($S \to U$) and air-to-ground ($U \to D$) links both exhibit line-of-sight (LoS) and non-line-of-sight (NLoS) fading, accurately captured by Rician distributions. The mathematical evaluation of outage probability under multiple relays requires complex multivariate extreme-value distributions and Marcum-Q integrals \cite{alouini2001digital}.
+    \item \textbf{Spatial Inversion of SIC Decoding Order:} The validity of NOMA relies on a strict channel gain order ($|h_2| > |h_1|$) for SIC execution. In mobile UAV networks, as the UAV traverses the sky, user channel conditions change dynamically. Without geometric constraints, the decoding order could invert mid-flight, destroying SIC integrity.
+    \item \textbf{Real-Time Inference Bottleneck:} Conventional numerical optimization methods, such as Alternating Optimization (AO) relying on convex relaxations and Sequential Quadratic Programming (SQP) \cite{wu2018joint}, require tens of iterations and several seconds per time slot. This latency is intolerable for agile UAV flight control under fast-varying fading environments.
+\end{enumerate}
+
+To conquer these challenges, this monograph presents a comprehensive mathematical framework and simulation benchmark comparing static baseline optimization, kinematic time-slotted numerical optimization, and real-time Deep Reinforcement Learning (DRL).
+
+% =========================================================================

@@ -1,0 +1,15 @@
+\section{Introduction \& Background}
+\label{sec:intro_background}
+
+\subsection*{Background}
+
+Space-Air-Ground Integrated Networks (SAGIN) are envisioned as a foundational infrastructure for sixth-generation (6G) wireless communications, aiming to eliminate coverage blind spots in remote areas, open oceans, mountainous regions, and disaster rescue scenarios \cite{liu2018space, zeng2019accessing}. In this architecture, satellites provide broad wide-area coverage but suffer from severe free-space path loss. The integration of Unmanned Aerial Vehicles (UAVs) acting as Decode-and-Forward (DF) relay stations helps regenerate signals, shorten transmission distances, and establish favorable line-of-sight (LoS) links \cite{wu2018joint}. When combined with power-domain Non-Orthogonal Multiple Access (NOMA), the UAV can simultaneously serve multiple terrestrial users over the same time-frequency resource block, substantially boosting spectral efficiency \cite{ding2017application}. However, the flexible mobility of the UAV necessitates stringent spatial boundary management to prevent inversions of the successive interference cancellation (SIC) decoding order, formulating a complex, non-convex non-linear optimization problem.
+
+\subsection*{Project Objectives}
+
+The project focuses on addressing three specific technical objectives:
+\begin{enumerate}
+    \item \textbf{Exact Analytical Derivation:} Establish exact closed-form analytical expressions for the outage probability (OP) of individual users and the overall system over generalized Rician fading channels via the first-order Marcum-Q function \cite{simon2005digital}, incorporating the Partial Relay Selection (PRS) scheme.
+    \item \textbf{Establishment of Numerical Benchmark (AO Benchmark):} Construct an Alternating Optimization (AO) framework that decouples the joint optimization problem into trajectory optimization (using Sequential Quadratic Programming - SQP) and power allocation (using Golden Section Search) under kinematic constraints and geometric SIC boundaries.
+    \item \textbf{Real-Time Control Implementation (Real-Time DRL):} Design and train a continuous Actor-Critic neural network based on the Deep Deterministic Policy Gradient (DDPG) algorithm \cite{lillicrap2015continuous} with Guided Displacement and Warm-Start Seeding, achieving an inference latency of $\approx 1.5$ ms/slot for adaptive real-time online aerial flight guidance.
+\end{enumerate}

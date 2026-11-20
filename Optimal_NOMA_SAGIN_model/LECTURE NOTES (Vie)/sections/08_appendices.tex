@@ -1,0 +1,73 @@
+\section*{VIII. Phụ lục Kỹ thuật}
+
+\subsection*{Phụ lục A: Bảng Tham số Mô phỏng Hệ thống}
+\vspace{0.2cm}
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{|p{4.8cm}|p{4.0cm}|X|}
+\hline
+\rowcolor{tableheader}
+\textbf{Thành phần / Tham số} & \textbf{Ký hiệu / Thông số} & \textbf{Giá trị Danh định} \\
+\hline
+Tọa độ Vệ tinh LEO & $\mathbf{q}_S = (x_S, z_S)$ & $(0.0, \, 1.0)$ (Chuẩn hóa) \\
+Tọa độ Người dùng xa $D_1$ & $\mathbf{q}_{D1} = (x_{D1}, z_{D1})$ & $(1.5, \, 0.0)$ \\
+Tọa độ Người dùng gần $D_2$ & $\mathbf{q}_{D2} = (x_{D2}, z_{D2})$ & $(1.0, \, 0.0)$ \\
+Vị trí Bắt đầu \& Đích UAV & $\mathbf{q}_{\text{start}}, \mathbf{q}_{\text{end}}$ & $(0.35, 0.50) \to (1.10, 0.30)$ \\
+Hành lang bay khả thi & $[x_{\min}, x_{\max}] \times [z_{\min}, z_{\max}]$ & $[0.10, 1.30] \times [0.20, 0.60]$ \\
+Số lượng khe thời gian & $N$, độ dài khe $dt$ & $N = 10$ khe, $dt = 2.0$ s ($T = 20.0$ s) \\
+Hệ số khoảng cách chuẩn hóa & $D_0$ & $125.0$ m \\
+Vận tốc bay tối đa & $V_{\max}$, $\Delta d_{\max}$ & $15.0$ m/s ($\Delta d_{\max} = 0.24$ đơn vị) \\
+Số lượng UAV ứng viên PRS & $N_{\text{UAV}}$ & $3$ trạm \\
+Hệ số Fading Rician & $K_{SU}, \, K_{UD}$ & $K_{SU} = 5.0$, $K_{UD} = 3.0$ \\
+Số mũ suy hao đường truyền & $\nu_{SU}, \, \nu_{UD}$ & $\nu_{SU} = 2.0$, $\nu_{UD} = 2.2$ \\
+Tỉ số SNR phát chuẩn hóa danh định & $\rho = \bar{\gamma}_S = \bar{\gamma}_U$ & $\rho = 20$ dB (các số liệu đối chuẩn $0.00533, 0.0206, 0.0197$ đều ứng với $\rho = 20$ dB) \\
+Ngưỡng SNR giải mã tối thiểu & $\gamma_{th0}, \, \gamma_{th1}, \, \gamma_{th2}$ & $\gamma_{th0} = 1.0$, $\gamma_{th1} = 2.0315$, $\gamma_{th2} = 1.0$ \\
+Tốc độ bit mục tiêu (2 chặng) & $R_1, \, R_2$ & $R_1 \approx 0.80$ bps/Hz, $R_2 = 0.50$ bps/Hz \\
+Ngưỡng khả thi phân bổ SIC & $\alpha_{1,\min} = \frac{\gamma_{th1}}{1 + \gamma_{th1}}$ & $\alpha_{1,\min} \approx 0.6701$ ($\approx 0.670$) \\
+Ranh giới hình học an toàn SIC & $x_{\text{sic\_bound}}$ & $1.21$ (với đệm $\Delta_{\text{margin}} = 0.04$) \\
+\hline
+\end{tabularx}
+\end{center}
+\vspace{0.3cm}
+
+\subsection*{Phụ lục B: Cấu hình Mạng Nơ-ron DRL \& Nền tảng Tính toán}
+\vspace{0.2cm}
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{|p{4.8cm}|X|}
+\hline
+\rowcolor{tableheader}
+\textbf{Hạng mục} & \textbf{Chi tiết Cấu hình} \\
+\hline
+Không gian Trạng thái (State) & 7 chiều: $\mathbf{s}_n = [x_n, z_n, d_{UD1}, d_{UD2}, d_{US}, \Delta_{\text{target}}, d_{\text{sic\_margin}}]^T$ \\
+Không gian Hành động (Action) & 3 chiều liên tục: $\mathbf{a}_n = [v_n, \theta_n, \alpha_1[n]]^T$ \\
+Kiến trúc Mạng Actor & MLP: $\text{Input}(7) \to \text{FC}(128, \text{ReLU}) \to \text{FC}(128, \text{ReLU}) \to \text{Output}(3, \text{Tanh})$ \\
+Kiến trúc Mạng Critic & MLP: $\text{Input}(7+3) \to \text{FC}(128, \text{ReLU}) \to \text{FC}(128, \text{ReLU}) \to \text{Output}(1, \text{Linear})$ \\
+Tốc độ học (Learning Rate) & Mạng Actor: $10^{-4}$, Mạng Critic: $10^{-3}$, Bộ tối ưu hóa: Adam \cite{kingma2014adam} \\
+Hệ số chiết khấu ($\gamma$) & $\gamma = 0.99$, Dung lượng bộ nhớ Replay Buffer: $50\,000$ mẫu \\
+Kích thước Mini-batch & $64$, Tần số cập nhật mềm mạng đích $\tau = 0.005$ \\
+Chiến lược Khám phá & Nhiễu Gaussian suy giảm dần: $\sigma_k = \max(0.05, 0.30 \cdot 0.985^k)$ \\
+Định hình phần thưởng (Reward) & $R_n = -\ln(OP_{\text{total}}[n] + 10^{-6}) - P_{\text{step}} - P_{\text{boundary}} + R_{\text{goal}}$ \\
+Nền tảng Phần cứng \& Phần mềm & CPU AMD Ryzen 7 / Intel Core i7, 16 GB RAM, MATLAB R2024b \\
+\hline
+\end{tabularx}
+\end{center}
+\vspace{0.3cm}
+
+\subsection*{Phụ lục C: Biểu thức Giải tích Xác suất Dừng Dạng đóng}
+Xác suất dừng của từng chặng truyền thông trên kênh fading Rician được xác định thông qua hàm Marcum-Q bậc 1, $Q_1(a, b)$ \cite{alouini2001digital}:
+\begin{align}
+    P_{\text{out}, SU_k}(\gamma_{th0}) &= 1 - Q_1\left(\sqrt{2 K_{SU}}, \, \sqrt{\frac{2(K_{SU}+1)\gamma_{th0}}{\bar{\gamma}_S \cdot d_{SU_k}^{-\nu_{SU}}}}\right), \label{eq:op_su} \\
+    P_{\text{out}, UD_1}[n] &= 1 - Q_1\left(\sqrt{2 K_{UD}}, \, \sqrt{\frac{2(K_{UD}+1)\theta_1[n]}{\bar{\gamma}_U \cdot d_{UD1}[n]^{-\nu_{UD}}}}\right), \quad \theta_1[n] = \frac{\gamma_{th1}}{\alpha_1[n] - \alpha_2[n]\gamma_{th1}}, \label{eq:op_ud1} \\
+    P_{\text{out}, UD_2}[n] &= 1 - Q_1\left(\sqrt{2 K_{UD}}, \, \sqrt{\frac{2(K_{UD}+1)\max(\theta_1[n], \theta_2[n])}{\bar{\gamma}_U \cdot d_{UD2}[n]^{-\nu_{UD}}}}\right), \quad \theta_2[n] = \frac{\gamma_{th2}}{\alpha_2[n]}. \label{eq:op_ud2}
+\end{align}
+Dưới cơ chế Lựa chọn Chuyển tiếp Từng phần (PRS), sự kiện dừng chặng 1 xảy ra khi toàn bộ $N_{\text{UAV}}$ trạm tiếp sóng đều không giải mã được tín hiệu: $P_{\text{out}, \text{Hop1}} = \prod_{k=1}^{N_{\text{UAV}}} P_{\text{out}, SU_k}(\gamma_{th0})$. Tại chặng 2, sự kiện dừng xảy ra khi ít nhất một trong hai người dùng không giải mã thành công: $P_{\text{out}, \text{Hop2}}[n] = 1 - (1 - P_{\text{out}, UD1}[n])(1 - P_{\text{out}, UD2}[n])$.
+
+Do đó, xác suất dừng toàn phần hệ thống tại khe $n$ tuân theo đúng công thức xác suất hệ thống:
+\begin{equation}
+\label{eq:op_total_exact}
+    OP_{\text{total}}[n] = P_{\text{out}, \text{Hop1}} + \left(1 - P_{\text{out}, \text{Hop1}}\right) \cdot \left[1 - (1 - P_{\text{out}, UD1}[n])(1 - P_{\text{out}, UD2}[n])\right].
+\end{equation}
+Từ biểu thức \eqref{eq:op_total_exact}, vì $[1 - (1 - P_1)(1 - P_2)] = P_1 + P_2 - P_1 P_2 \ge \max(P_1, P_2)$, xác suất dừng toàn phần luôn thỏa mãn điều kiện $OP_{\text{total}}[n] \ge \max(P_{\text{out}, UD1}[n], P_{\text{out}, UD2}[n])$, bảo đảm tính nhất quán toán học tuyệt đối giữa lý thuyết và số liệu thực nghiệm.
+
+

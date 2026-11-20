@@ -1,0 +1,36 @@
+\section{System Model and Dimensionless Coordinate Frame}
+\label{sec:sys_model}
+% =========================================================================
+
+We consider a dual-hop downlink SAGIN-NOMA transmission system, as illustrated in Fig.~\ref{fig:spatial_trajectory}. The network comprises a satellite source $S$, a cluster of $N_{\text{UAV}}$ candidate decode-and-forward (DF) UAV relays, and two terrestrial destinations: a near-user $D_2$ and a far-user $D_1$. Direct satellite-to-ground links are assumed heavily shadowed or blocked by terrain obstacles.
+
+\subsection{Dimensionless 2D $(Oxz)$ Coordinate System}
+To guarantee numerical stability in optimization solvers and neural networks, all spatial coordinates are normalized into a dimensionless Cartesian plane $(Oxz)$:
+\begin{itemize}
+    \item Satellite source location: $\mathbf{q}_S = [0.0, \, 1.0]^T$.
+    \item Near ground user: $\mathbf{q}_{D2} = [1.0, \, 0.0]^T$.
+    \item Far ground user: $\mathbf{q}_{D1} = [1.5, \, 0.0]^T$.
+    \item UAV operational corridor: $\mathbf{q}_U = [x, z]^T \in [X_{\min}, X_{\max}] \times [Z_{\min}, Z_{\max}] = [0.2, 1.8] \times [0.2, 0.6]$.
+\end{itemize}
+
+The mission horizon $T$ is discretized into $N$ equal time slots of duration $dt = T/N$, such that the UAV trajectory is described by the sequence $\{\mathbf{q}_U[n]\}_{n=1}^N$. The Euclidean distances from the UAV at slot $n$ to $S$, $D_1$, and $D_2$ are given respectively by:
+\begin{equation}
+    d_{SU}[n] = \|\mathbf{q}_S - \mathbf{q}_U[n]\|, \quad d_{UD1}[n] = \|\mathbf{q}_U[n] - \mathbf{q}_{D1}\|, \quad d_{UD2}[n] = \|\mathbf{q}_U[n] - \mathbf{q}_{D2}\|.
+\end{equation}
+
+The average channel power gains adhere to path-loss models with path-loss exponents $\nu_{SU}$ and $\nu_{UD}$:
+\begin{equation}
+    \lambda_{SU}[n] = \left( \max\{d_{SU}[n], \, 10^{-4}\} \right)^{-\nu_{SU}}, \quad \lambda_{UDk}[n] = \left( \max\{d_{UDk}[n], \, 10^{-4}\} \right)^{-\nu_{UD}}, \quad k \in \{1, 2\}.
+\end{equation}
+
+\subsection{Signal Transmission and NOMA Protocol}
+In each time slot $n$:
+\begin{enumerate}
+    \item \textbf{Hop 1 ($S \to U$):} Satellite $S$ broadcasts a superposed signal $x_S = \sqrt{\alpha_1[n]} x_1 + \sqrt{\alpha_2[n]} x_2$, where $\mathbb{E}\{|x_k|^2\} = 1$, and $\alpha_1[n] + \alpha_2[n] = 1$ with $\alpha_1[n] > \alpha_2[n]$. A Partial Relay Selection (PRS) protocol selects the UAV with the highest instantaneous channel power gain $|h_{SU, i}|^2$ among the $N_{\text{UAV}}$ candidate relays:
+    \begin{equation}
+        i^* = \arg\max_{i \in \{1, \dots, N_{\text{UAV}}\}} |h_{SU, i}[n]|^2.
+    \end{equation}
+    \item \textbf{Hop 2 ($U \to D$):} The selected DF relay $U_{i^*}$ decodes both signals $x_1$ and $x_2$, re-encodes the superposed composite signal, and forwards it to the ground users with total transmit power normalized by the average SNR $\rho = P/\sigma^2$.
+\end{enumerate}
+
+% =========================================================================

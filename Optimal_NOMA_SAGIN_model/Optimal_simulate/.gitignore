@@ -1,0 +1,17 @@
+# MATLAB temporary and backup files
+*.asv
+*.m~
+*.slxc
+slprj/
+*.autosave
+
+# MATLAB figures runtime
+*.fig
+
+# OS specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Log files
+*.log

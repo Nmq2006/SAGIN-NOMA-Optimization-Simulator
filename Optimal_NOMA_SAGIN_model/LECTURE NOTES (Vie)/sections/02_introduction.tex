@@ -1,0 +1,12 @@
+\section*{II. Giới thiệu \& Bối cảnh}
+
+\subsection*{Bối cảnh}
+Mạng tích hợp Không gian - Trên không - Mặt đất (Space-Air-Ground Integrated Networks - SAGIN) được định vị là hạ tầng trụ cột của mạng không dây thế hệ thứ sáu (6G), nhằm xóa bỏ các điểm mù kết nối tại vùng sâu, vùng xa, hải đảo và hỗ trợ cứu hộ khẩn cấp \cite{liu2018space, zeng2019accessing}. Trong kiến trúc này, vệ tinh cung cấp vùng phủ sóng diện rộng nhưng chịu suy hao truyền sóng trong không gian tự do rất lớn. Việc tích hợp Phương tiện bay không người lái (UAV) đóng vai trò trạm tiếp sóng Giải mã và Chuyển tiếp (Decode-and-Forward - DF) giúp tái tạo tín hiệu, rút ngắn cự ly truyền thông và thiết lập kênh truyền tầm nhìn thẳng (LoS) thuận lợi \cite{wu2018joint}. Khi kết hợp với công nghệ Đa truy nhập phi trực giao (NOMA) phân chia miền công suất, UAV có thể phục vụ đồng thời nhiều người dùng mặt đất trên cùng một khối tài nguyên tần số - thời gian, nâng cao đáng kể hiệu quả sử dụng phổ tần \cite{ding2017survey}. Tuy nhiên, chuyển động linh hoạt của UAV đòi hỏi phải kiểm soát chặt chẽ ranh giới không gian nhằm tránh đảo lộn thứ tự giải mã khử can nhiễu liên tiếp (SIC), đặt ra một bài toán tối ưu hóa phi lồi phi tuyến phức tạp.
+
+\subsection*{Mục tiêu Đề tài}
+Đề tài tập trung giải quyết ba mục tiêu kỹ thuật cụ thể sau:
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item \textbf{Dẫn giải Giải tích Chính xác:} Thiết lập biểu thức giải tích dạng đóng cho xác suất dừng (Outage Probability - OP) của từng người dùng và toàn hệ thống trên kênh fading Rician tổng quát thông qua hàm Marcum-Q bậc 1 \cite{alouini2001digital} có xét đến cơ chế Lựa chọn Chuyển tiếp Từng phần (PRS).
+    \item \textbf{Thiết lập Nghiệm Tham chiếu Chuẩn (AO Benchmark):} Xây dựng khung Tối ưu hóa Luân phiên (AO) phân rã bài toán thành tối ưu quỹ đạo bay (bằng Sequential Quadratic Programming - SQP) và phân bổ công suất (bằng Golden Section Search) dưới các ràng buộc động học và ranh giới hình học SIC.
+    \item \textbf{Hiện thực hóa Điều khiển Thời gian thực (Real-Time DRL):} Thiết kế và huấn luyện mạng Actor-Critic liên tục dựa trên thuật toán Deep Deterministic Policy Gradient (DDPG) \cite{lillicrap2015continuous} với kỹ thuật Dịch chuyển Định hướng (Guided Displacement) và Nạp mồi Khởi tạo (Warm-Start Seeding), đạt thời gian suy luận $\approx 1.5$ ms/khe phục vụ điều khiển bay trực tuyến thích ứng.
+\end{enumerate}

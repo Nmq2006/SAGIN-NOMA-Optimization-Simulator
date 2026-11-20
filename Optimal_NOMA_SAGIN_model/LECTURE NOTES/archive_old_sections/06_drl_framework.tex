@@ -1,0 +1,39 @@
+\section{Real-Time Deep Reinforcement Learning Framework}
+\label{sec:drl}
+% =========================================================================
+
+While AO yields high-quality numerical solutions, its iterative nature requires $\approx 1.85$ seconds per computation, rendering it unsuitable for real-time mobile UAV guidance. To overcome this, we design an Actor-Critic DRL framework based on the Deep Deterministic Policy Gradient (DDPG) paradigm, implemented in pure matrix operations.
+
+\subsection{Markov Decision Process (MDP) Formulation}
+\begin{enumerate}
+    \item \textbf{Continuous State Space ($S_n \in \mathbb{R}^8$):}
+    \begin{equation}
+        S_n = \left[ \frac{x_n}{X_{\max}}, \, \frac{z_n}{Z_{\max}}, \, \frac{d_{SU}[n]}{2}, \, \frac{d_{UD1}[n]}{2}, \, \frac{d_{UD2}[n]}{2}, \, \frac{\|\mathbf{q}_U[n] - \mathbf{q}_{\text{end}}\|}{2}, \, \frac{x_{\text{sic\_bound}} - x_n}{1.0}, \, \frac{N - n}{N} \right]^T.
+    \end{equation}
+    All features are strictly normalized in $[0, 1]$ to stabilize backpropagation.
+    \item \textbf{Continuous Action Space ($A_n \in \mathbb{R}^3$):}
+    \begin{equation}
+        A_n = [\delta_{x, n}, \, \delta_{z, n}, \, \tilde{a}_{1, n}]^T \in [-1, 1] \times [-1, 1] \times [0, 1].
+    \end{equation}
+    To eliminate premature path stalls and guarantee exact target arrival, we deploy the \textbf{Guided Displacement} rule:
+    \begin{equation}
+        \mathbf{q}_U[n+1] = \mathbf{q}_U[n] + \underbrace{\frac{\mathbf{q}_{\text{end}} - \mathbf{q}_U[n]}{N - n + 1}}_{\text{Nominal Target Vector}} + \underbrace{[\delta_{x, n}, \, \delta_{z, n}]^T \cdot 0.045}_{\text{Actor Micro-Adjustment}}.
+    \end{equation}
+    Velocity scaling is subsequently enforced: $\|\Delta \mathbf{q}\| \le V_{\max} \cdot dt = 0.24$.
+    Power allocation is bounded in the safe, feasible range $\alpha_1[n] = 0.70 + 0.12 \cdot \tilde{a}_{1, n} \in [0.70, 0.82]$.
+    \item \textbf{Logarithmic Reward Shaping ($R_n$):}
+    \begin{equation}
+        R_n = - 2.5 \log_{10}(OP_{\text{total}}[n] + 10^{-6}) - 3.0 \|\mathbf{q}_U[n+1] - \mathbf{q}_{\text{end}}\| - 2.0 \|\boldsymbol{\delta}_n\| + \mathbf{1}_{\{n = N\}} \cdot 6.0.
+    \end{equation}
+    Logarithmic outage scaling produces steep gradients whenever Outage probability decreases by orders of magnitude.
+\end{enumerate}
+
+\subsection{Neural Network Architecture and Training Engine}
+\begin{itemize}
+    \item \textbf{Actor Network $\mu(S | \boldsymbol{\theta}^\mu)$:} Consists of input layer ($8$), two hidden layers ($64 \times 64$, ReLU activation), and an output layer ($3$) mapped via $\tanh$ for displacement and sigmoid for power.
+    \item \textbf{Critic Network $Q(S, A | \boldsymbol{\theta}^Q)$:} Evaluates state-action pairs $[S; A] \in \mathbb{R}^{11}$ through two hidden layers ($64 \times 64$, ReLU activation) to output a scalar $Q$-value.
+    \item \textbf{Warm-Start Experience Seeding:} To prevent early-stage exploration divergence, the Replay Buffer (capacity $6000$) is pre-populated with $30$ nominal episodes with balanced power before online gradient updates begin.
+    \item \textbf{Custom Adam Optimizer:} Gradients are clipped at norm $5.0$, with learning rates $\eta_{\text{actor}} = 5 \times 10^{-4}$, $\eta_{\text{critic}} = 10^{-3}$, and soft target update factor $\tau = 0.008$.
+\end{itemize}
+
+% =========================================================================

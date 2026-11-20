@@ -1,0 +1,53 @@
+\section{Theoretical Outage Performance under Rician Fading}
+\label{sec:performance_analysis}
+% =========================================================================
+
+Both wireless hops experience independent Rician fading, with Rician $K$-factors denoted by $K_{SU}$ and $K_{UD}$.
+
+\begin{lemma}[Statistics of Single Rician Channel]
+Let $h \sim \mathcal{CN}(\sqrt{\frac{K\lambda}{K+1}}, \, \frac{\lambda}{K+1})$ denote a Rician fading channel gain with average gain $\lambda$ and factor $K$. The cumulative distribution function (CDF) of the power gain $X = |h|^2$ is given in closed form by:
+\begin{equation}
+    F_X(\theta) = 1 - Q_1\left( \sqrt{2K}, \, \sqrt{\frac{2(K+1)\theta}{\lambda}} \right), \quad \theta \ge 0,
+    \label{eq:rician_cdf}
+\end{equation}
+where $Q_1(a, b) = \int_b^\infty x \exp\left( -\frac{x^2 + a^2}{2} \right) I_0(ax) \, dx$ denotes the first-order Marcum-Q function, and $I_0(\cdot)$ is the zeroth-order modified Bessel function of the first kind.
+\end{lemma}
+
+\begin{lemma}[Extreme Value CDF under Partial Relay Selection]
+Under the PRS scheme across $N_{\text{UAV}}$ independent and identically distributed (i.i.d.) satellite-to-relay links, the CDF of the effective channel gain $X_{SU}^* = \max_{i=1,\dots,N_{\text{UAV}}} |h_{SU, i}|^2$ is given by:
+\begin{equation}
+    F_{X_{SU}^*}(\theta) = \left[ F_X(\theta) \right]^{N_{\text{UAV}}} = \left[ 1 - Q_1\left( \sqrt{2K_{SU}}, \, \sqrt{\frac{2(K_{SU}+1)\theta}{\lambda_{SU}[n]}} \right) \right]^{N_{\text{UAV}}}.
+    \label{eq:prs_cdf}
+\end{equation}
+\end{lemma}
+
+\begin{proposition}[NOMA SINR and SIC Feasibility Thresholds]
+Let $R_1$ and $R_2$ denote the target transmission rates for $D_1$ and $D_2$, respectively. The corresponding target SINR thresholds are $\gamma_{th1} = 2^{2R_1} - 1$ and $\gamma_{th2} = 2^{2R_2} - 1$.
+\begin{enumerate}
+    \item \textbf{SIC Feasibility Condition:} For $D_2$ and the UAV relay to successfully detect and subtract $x_1$ before decoding $x_2$, the power allocation coefficient $\alpha_1[n]$ must satisfy:
+    \begin{equation}
+        \frac{\alpha_1[n]}{\alpha_2[n]} > \gamma_{th1} \iff \alpha_1[n] > \frac{\gamma_{th1}}{1 + \gamma_{th1}} \triangleq \alpha_{1,\min}.
+        \label{eq:sic_condition}
+    \end{equation}
+    \item \textbf{Effective Channel Thresholds:} The minimum channel power gains required to decode signals $x_1$ and $x_2$ are:
+    \begin{equation}
+        \Theta_1[n] = \frac{\gamma_{th1}}{\rho \left( \alpha_1[n] - \alpha_2[n] \gamma_{th1} \right)}, \quad \Theta_2[n] = \max\left\{ \Theta_1[n], \, \frac{\gamma_{th2}}{\rho \alpha_2[n]} \right\}.
+        \label{eq:thresholds}
+    \end{equation}
+\end{enumerate}
+\end{proposition}
+
+\begin{theorem}[Closed-Form End-to-End Outage Probabilities]
+Under Decode-and-Forward relaying, user $D_k$ ($k \in \{1, 2\}$) successfully receives its message if and only if both Hop 1 and Hop 2 successfully decode the corresponding stream. Consequently:
+\begin{align}
+    OP_{D1}[n] &= 1 - \left[ 1 - \left( 1 - Q_1\left( a_{SU}, \, \sqrt{\frac{2(K_{SU}+1)\Theta_1[n]}{\lambda_{SU}[n]}} \right) \right)^{N_{\text{UAV}}} \right] Q_1\left( a_{UD}, \, \sqrt{\frac{2(K_{UD}+1)\Theta_1[n]}{\lambda_{UD1}[n]}} \right), \label{eq:op_d1} \\
+    OP_{D2}[n] &= 1 - \left[ 1 - \left( 1 - Q_1\left( a_{SU}, \, \sqrt{\frac{2(K_{SU}+1)\Theta_2[n]}{\lambda_{SU}[n]}} \right) \right)^{N_{\text{UAV}}} \right] Q_1\left( a_{UD}, \, \sqrt{\frac{2(K_{UD}+1)\Theta_2[n]}{\lambda_{UD2}[n]}} \right), \label{eq:op_d2}
+\end{align}
+where $a_{SU} = \sqrt{2K_{SU}}$ and $a_{UD} = \sqrt{2K_{UD}}$. Assuming independent fading channels across ground receivers, the total system outage probability at time slot $n$ is:
+\begin{equation}
+    OP_{\text{total}}[n] = 1 - \left( 1 - OP_{D1}[n] \right) \left( 1 - OP_{D2}[n] \right).
+    \label{eq:op_total}
+\end{equation}
+\end{theorem}
+
+% =========================================================================

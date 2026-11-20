@@ -1,0 +1,64 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- Essential Packages ---
+\usepackage[top=2.2cm, bottom=2.2cm, left=2.2cm, right=2.2cm]{geometry}
+\usepackage{amsmath, amssymb, amsfonts, amsthm, mathtools}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{booktabs, multirow, makecell}
+\usepackage{algorithm, algpseudocode}
+\usepackage{xcolor}
+\usepackage{cite}
+\usepackage{microtype}
+\usepackage{titlesec}
+\usepackage[colorlinks=true, linkcolor=blue!80!black, citecolor=blue!80!black, urlcolor=blue!80!black]{hyperref}
+
+\linespread{1.15}
+
+% --- Custom Section Numbering (Roman Numerals matching Vietnamese Report) ---
+\renewcommand{\thesection}{\Roman{section}}
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt plus 2pt minus 2pt}{8pt plus 2pt minus 2pt}
+
+\titleformat{\subsection}{\normalsize\bfseries}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{10pt plus 2pt minus 2pt}{6pt plus 2pt minus 2pt}
+
+\begin{document}
+
+% --- Institutional Header & 6G Badge ---
+\noindent
+\begin{minipage}[t]{0.75\textwidth}
+    \textbf{Posts and Telecommunications Institute of Technology (PTIT)}\\
+    \textbf{Faculty of Telecommunications II}\\[0.12cm]
+    \small \textbf{Email:} \texttt{nmquan3108@gmail.com}
+\end{minipage}%
+\hfill
+
+\vspace{0.25cm}
+\hrule height 0.8pt
+\vspace{0.8cm}
+
+% --- Document Title ---
+\begin{center}
+    {\LARGE \textbf{Joint Trajectory and Power Allocation Optimization\\[0.25cm]
+    in SAGIN-NOMA Networks:\\[0.28cm]
+    From Alternating Optimization (AO) to Real-Time Deep Reinforcement Learning (DRL)}}\\[0.6cm]
+\end{center}
+
+% --- Main Body Sections ---
+\input{sections/01_executive_summary}
+\input{sections/02_introduction}
+\input{sections/03_methodology}
+\input{sections/04_results}
+\input{sections/05_discussion}
+\input{sections/06_conclusion}
+\input{sections/07_future_directions}
+\input{sections/08_appendices}
+\input{sections/09_author_info}
+
+% --- References ---
+\renewcommand{\refname}{References}
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

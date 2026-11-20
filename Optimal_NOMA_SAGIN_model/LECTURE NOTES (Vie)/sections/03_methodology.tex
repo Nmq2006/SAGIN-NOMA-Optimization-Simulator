@@ -1,0 +1,35 @@
+\section*{III. Phương pháp luận \& Mô hình Kỹ thuật}
+
+\subsection*{Tổng quan Hệ thống}
+Hệ thống mạng SAGIN-NOMA được mô hình hóa trên mặt phẳng tọa độ 2D chuẩn hóa $(Oxz)$ với các thành phần và tham số vật lý:
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{Kiến trúc Không gian - Thời gian:} Một vệ tinh nguồn $S$ tại tọa độ chuẩn hóa $\mathbf{q}_S = (0.0, 1.0)$ (mô hình hình học chuẩn hóa 2D mang tính minh họa với cự ly quy đổi $D_0 = 125$ m); một cụm gồm $N_{\text{UAV}} = 3$ trạm tiếp sóng UAV bay theo đội hình cụm lân cận (cluster) quanh vị trí danh định $\mathbf{q}_U[n]$ (cơ chế PRS chọn UAV có độ lợi kênh tức thời tốt nhất trong cụm); và hai người dùng mặt đất gồm người dùng gần $D_2$ tại $\mathbf{q}_{D2} = (1.0, 0.0)$ và người dùng xa $D_1$ tại $\mathbf{q}_{D1} = (1.5, 0.0)$. Hành trình bay của UAV được chia thành $N = 10$ khe thời gian rời rạc, mỗi khe kéo dài $dt = 2.0$ giây (tổng thời gian hành trình $T = 20.0$ s).
+    \item \textbf{Chuẩn hóa Kích thước \& Vận tốc:} Khoảng cách được chuẩn hóa theo hệ số $D_0 = 125$ m (1 đơn vị chuẩn hóa tương đương $125$ m thực địa). Vận tốc bay cực đại $V_{\max} = 15$ m/s tương ứng với độ dịch chuyển chuẩn hóa tối đa mỗi khe là $\Delta d_{\max} = V_{\max} \cdot dt / D_0 = 15 \times 2 / 125 = 0.24$ đơn vị.
+    \item \textbf{Mô hình Kênh Fading Rician:} Cả hai chặng truyền thông đều chịu ảnh hưởng của fading Rician tổng quát kết hợp suy hao đường truyền theo khoảng cách Euclidean với số mũ suy hao $\nu_{SU} = 2.0$ (chặng 1) và $\nu_{UD} = 2.2$ (chặng 2). Hệ số Rician lần lượt là $K_{SU} = 5.0$ (thành phần LoS vệ tinh chiếm ưu thế) và $K_{UD} = 3.0$.
+    \item \textbf{Cơ chế PRS và Ghép mã NOMA:} Chặng 1 áp dụng cơ chế Lựa chọn Chuyển tiếp Từng phần (PRS), trong đó UAV có độ lợi kênh $|h_{SU_k}|^2$ lớn nhất trong cụm $N_{\text{UAV}} = 3$ được chọn để giải mã tín hiệu từ vệ tinh. Tại chặng 2, UAV được chọn phát đồng thời tín hiệu tới $D_1, D_2$ theo nguyên lý NOMA phân chia miền công suất với $\alpha_1[n] + \alpha_2[n] = 1$ ($\alpha_1[n] > \alpha_2[n]$). Người dùng gần $D_2$ tiến hành giải mã khử nhiễu liên tiếp (SIC) tín hiệu của $D_1$ trước khi tách tín hiệu của chính mình.
+\end{itemize}
+
+\subsection*{Thiết lập Bài toán Tối ưu hóa}
+Để cực tiểu hóa xác suất dừng trung bình toàn mạng $\bar{P}_{\text{out}}$ trên toàn bộ hành trình $N = 10$ khe, bài toán tối ưu hóa liên hợp giữa chuỗi tọa độ quỹ đạo bay $\mathbf{Q} \in \mathbb{R}^{N \times 2}$ và chuỗi vector công suất $\boldsymbol{\alpha}_1 \in \mathbb{R}^N$ được thiết lập như sau:
+\begin{subequations}
+\label{eq:opt_problem}
+\begin{align}
+    \min_{\mathbf{Q}, \, \boldsymbol{\alpha}_1} \quad & \bar{P}_{\text{out}} = \frac{1}{N} \sum_{n=1}^N OP_{\text{total}}[n] \label{eq:obj} \\
+    \text{thỏa mãn} \quad 
+    & \text{C1}: x_{\min} \le x_U[n] \le x_{\max}, \quad z_{\min} \le z_U[n] \le z_{\max}, \quad \forall n \in \{1, \dots, N\}, \label{eq:c1} \\
+    & \text{C2}: \mathbf{q}_U[1] = \mathbf{q}_{\text{start}} = (0.35, 0.50), \quad \mathbf{q}_U[N] = \mathbf{q}_{\text{end}} = (1.10, 0.30), \label{eq:c2} \\
+    & \text{C3}: \|\mathbf{q}_U[n] - \mathbf{q}_U[n-1]\| \le \Delta d_{\max} = 0.24, \quad \forall n \in \{2, \dots, N\}, \label{eq:c3} \\
+    & \text{C4}: x_U[n] \le \frac{x_{D1} + x_{D2}}{2} - \Delta_{\text{margin}} = 1.21, \quad \forall n, \label{eq:c4} \\
+    & \text{C5}: \alpha_1[n] + \alpha_2[n] = 1, \quad \forall n, \label{eq:c5} \\
+    & \text{C6}: \alpha_1[n] \ge \alpha_{1,\min} = \frac{\gamma_{th1}}{1 + \gamma_{th1}} \approx 0.670, \quad \alpha_1[n] \le 1 - \epsilon_{\text{sic}}, \quad \forall n. \label{eq:c6}
+\end{align}
+\end{subequations}
+Trong đó ràng buộc $\text{C1}$ quy định hành lang bay an toàn $x \in [0.10, 1.30]$ và $z \in [0.20, 0.60]$; $\text{C2}$ cố định điểm bắt đầu và điểm kết thúc hành trình; $\text{C3}$ là ràng buộc động học bước bay tối đa; $\text{C4}$ là \textbf{ràng buộc ranh giới hình học SIC} bảo đảm điều kiện suy hao cự ly trung bình $d_{UD2}[n] < d_{UD1}[n]$ luôn thỏa mãn nhằm duy trì trật tự giải mã SIC; $\text{C5}$ và $\text{C6}$ bảo đảm bảo toàn công suất phát và ngưỡng khả thi cho quá trình giải mã SIC tại $D_2$.
+
+\subsection*{Phương pháp Giải thuật Tối ưu}
+Do bài toán \eqref{eq:opt_problem} có tính chất phi lồi (non-convex) và chứa hàm giải tích Marcum-Q phi tuyến phức tạp, nghiên cứu triển khai hai giải pháp đối sánh:
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item \textbf{Tối ưu hóa Luân phiên Tĩnh (Static AO Benchmark):} Khảo sát tại một vị trí snapshot danh định để phân tích đặc tính hội tụ của giải thuật lặp luân phiên giữa tọa độ UAV và cặp công suất $(\alpha_1, \alpha_2)$, đồng thời kiểm chứng tính chính xác của biểu thức giải tích qua so sánh với mô phỏng thống kê Monte-Carlo.
+    \item \textbf{Tối ưu hóa Luân phiên Động (Dynamic Time-Slotted AO):} Mở rộng trên toàn bộ $N=10$ khe thời gian, kết hợp giải thuật Quy hoạch toàn phương tuần tự (SQP) cho biến quỹ đạo và Tìm kiếm lát cắt vàng cho biến công suất. Do bài toán phi lồi, nghiệm của AO đóng vai trò là \textbf{nghiệm tham chiếu chuẩn (Numerical Benchmark)} giúp đánh giá hiệu năng của các giải thuật khác.
+    \item \textbf{Học tăng cường sâu Thời gian thực (Real-Time DRL Agent):} Xây dựng mạng nơ-ron Actor-Critic liên tục \cite{lillicrap2015continuous}. Trạng thái tại khe $n$ bao gồm vị trí hiện tại, khoảng cách tới các nút và biên an toàn SIC: $\mathbf{s}_n = [x_n, z_n, d_{UD1}, d_{UD2}, d_{US}, \Delta_{\text{target}}, d_{\text{sic\_margin}}]^T$. Hành động gồm bước dịch chuyển vận tốc, góc bay và hệ số công suất: $\mathbf{a}_n = [v_n, \theta_n, \alpha_1[n]]^T$. Hàm phần thưởng logarit $R_n = -\ln(OP_{\text{total}}[n] + 10^{-6}) - P_{\text{penalty}}$ được định hình để dẫn hướng tác tử tối ưu hóa tức thời mà không bị triệt tiêu gradient.
+\end{enumerate}

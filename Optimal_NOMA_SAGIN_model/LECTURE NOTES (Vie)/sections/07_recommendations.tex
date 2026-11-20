@@ -1,0 +1,8 @@
+\section*{VII. Định hướng Phát triển}
+
+Dựa trên các kết quả đạt được và các hạn chế đã xác định, nghiên cứu đề xuất ba định hướng phát triển kỹ thuật trọng tâm:
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item \textbf{Mở rộng Mô hình Không gian 3D \& Kênh truyền Thực tế:} Mở rộng bài toán tối ưu sang không gian 3D hoàn chỉnh, tích hợp tính toán chuyển động quỹ đạo vệ tinh động theo dữ liệu TLE thời gian thực và mô hình hóa tác động của nhiễu gió ngẫu nhiên cùng thông tin trạng thái kênh không hoàn hảo (Imperfect CSI).
+    \item \textbf{Cơ chế Học tăng cường An toàn (Safe RL):} Tích hợp các ràng buộc an toàn nghiêm ngặt (ví dụ: Control Barrier Functions - CBF hoặc Action Projection) vào quá trình ra quyết định của mạng Actor nhằm bảo đảm tuyệt đối không bao giờ vi phạm ranh giới giải mã SIC ngay cả khi môi trường có thăng giáng bất thường.
+    \item \textbf{Triển khai Thử nghiệm trên Phần cứng Nhúng (Edge AI):} Chuyển đổi mô hình mạng DDPG Actor sang định dạng ONNX/TensorRT để nạp lên máy tính nhúng gắn trên UAV thực tế, kiểm chứng thời gian đáp ứng phần cứng dưới $5$ ms trong các chuyến bay thử nghiệm thực địa.
+\end{enumerate}

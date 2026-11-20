@@ -1,0 +1,9 @@
+\section{Future Directions}
+\label{sec:future_directions}
+
+Building upon these findings and addressing identified limitations, three priority technical research avenues are proposed:
+\begin{enumerate}
+    \item \textbf{Extension to Full 3D Space \& Realistic Channels:} Extend the joint optimization framework to full 3D spatial dynamics, incorporating dynamic satellite ephemeris modeling from real-time Two-Line Element (TLE) orbital data, and modeling stochastic aerodynamic wind gusts alongside Imperfect Channel State Information (Imperfect CSI).
+    \item \textbf{Safe Reinforcement Learning (Safe RL) Mechanisms:} Integrate formal safety guarantees (such as Control Barrier Functions - CBF or Action Projection) into the Actor's policy execution to strictly ensure zero-violation of the SIC decoding boundary even under extreme channel or turbulence fluctuations.
+    \item \textbf{Embedded Hardware Deployment (Edge AI):} Export the trained DDPG Actor network into optimized runtime formats (e.g., ONNX, TensorRT) for onboard execution on physical UAV companion computers, experimentally verifying sub-5 ms hardware latency during real-world flight trials.
+\end{enumerate}

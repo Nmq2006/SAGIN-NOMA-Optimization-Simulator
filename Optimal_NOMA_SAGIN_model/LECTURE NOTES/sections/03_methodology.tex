@@ -1,0 +1,39 @@
+\section{Methodology \& Technical Model}
+\label{sec:methodology}
+
+\subsection*{System Overview}
+
+The SAGIN-NOMA network system is modeled in a normalized 2D coordinate plane $(Oxz)$ with the following physical components and parameters:
+\begin{itemize}
+    \item \textbf{Spatio-Temporal Architecture:} A source satellite $S$ at normalized coordinates $\mathbf{q}_S = (0.0, 1.0)$ (an illustrative normalized 2D geometric model with reference scaling distance $D_0 = 125$ m); a cluster of $N_{\text{UAV}} = 3$ UAV relays flying in close formation around a nominal waypoint $\mathbf{q}_U[n]$ (the PRS mechanism selects the UAV with the highest instantaneous channel gain within the cluster); and two ground users comprising near user $D_2$ at $\mathbf{q}_{D2} = (1.0, 0.0)$ and far user $D_1$ at $\mathbf{q}_{D1} = (1.5, 0.0)$. The UAV mission horizon is discretized into $N = 10$ discrete time slots, each lasting $dt = 2.0$ seconds (total flight time $T = 20.0$ s).
+    \item \textbf{Dimensionless Scaling \& Velocity:} Distances are normalized by the reference scaling factor $D_0 = 125$ m ($1$ normalized unit corresponds to $125$ m in the field). The maximum flight velocity $V_{\max} = 15$ m/s corresponds to a maximum normalized displacement per slot of $\Delta d_{\max} = V_{\max} \cdot dt / D_0 = 15 \times 2 / 125 = 0.24$ units.
+    \item \textbf{Rician Fading Channel Model:} Both communication hops experience generalized Rician fading combined with Euclidean path loss, with path-loss exponents $\nu_{SU} = 2.0$ (Hop 1) and $\nu_{UD} = 2.2$ (Hop 2). The Rician $K$-factors are $K_{SU} = 5.0$ (dominant satellite LoS component) and $K_{UD} = 3.0$.
+    \item \textbf{PRS Scheme and NOMA Multiplexing:} Hop 1 applies Partial Relay Selection (PRS), wherein the UAV with the highest instantaneous channel gain $|h_{SU_k}|^2$ among the $N_{\text{UAV}} = 3$ candidate relays is chosen to decode the satellite transmission. In Hop 2, the selected UAV simultaneously transmits to $D_1$ and $D_2$ using power-domain NOMA with $\alpha_1[n] + \alpha_2[n] = 1$ ($\alpha_1[n] > \alpha_2[n]$). Near user $D_2$ performs successive interference cancellation (SIC) to decode and subtract $D_1$'s signal before recovering its own desired signal.
+\end{itemize}
+
+\subsection*{Optimization Problem Formulation}
+
+To minimize the average total network outage probability $\bar{P}_{\text{out}}$ over the mission horizon $N = 10$ slots, the joint optimization problem between the trajectory coordinate sequence $\mathbf{Q} \in \mathbb{R}^{N \times 2}$ and the power allocation vector $\boldsymbol{\alpha}_1 \in \mathbb{R}^N$ is formulated as follows:
+\begin{subequations}
+\label{eq:opt_problem}
+\begin{align}
+\min_{\mathbf{Q}, \, \boldsymbol{\alpha}_1} \quad & \bar{P}_{\text{out}} = \frac{1}{N} \sum_{n=1}^N OP_{\text{total}}[n] \label{eq:obj} \\
+\text{s.t.} \quad 
+& \text{C1}: x_{\min} \le x_U[n] \le x_{\max}, \quad z_{\min} \le z_U[n] \le z_{\max}, \quad \forall n \in \{1, \dots, N\}, \label{eq:c1} \\
+& \text{C2}: \mathbf{q}_U[1] = \mathbf{q}_{\text{start}} = (0.35, 0.50), \quad \mathbf{q}_U[N] = \mathbf{q}_{\text{end}} = (1.10, 0.30), \label{eq:c2} \\
+& \text{C3}: \|\mathbf{q}_U[n] - \mathbf{q}_U[n-1]\| \le \Delta d_{\max} = 0.24, \quad \forall n \in \{2, \dots, N\}, \label{eq:c3} \\
+& \text{C4}: x_U[n] \le \frac{x_{D1} + x_{D2}}{2} - \Delta_{\text{margin}} = 1.21, \quad \forall n, \label{eq:c4} \\
+& \text{C5}: \alpha_1[n] + \alpha_2[n] = 1, \quad \forall n, \label{eq:c5} \\
+& \text{C6}: \alpha_1[n] \ge \alpha_{1,\min} = \frac{\gamma_{th1}}{1 + \gamma_{th1}} \approx 0.670, \quad \alpha_1[n] \le 1 - \epsilon_{\text{sic}}, \quad \forall n. \label{eq:c6}
+\end{align}
+\end{subequations}
+Here, constraint C1 defines the safe flight corridor $x \in [0.10, 1.30]$ and $z \in [0.20, 0.60]$; C2 fixes the designated mission start and terminal waypoints; C3 is the kinematic maximum displacement constraint per time slot; C4 represents the \textbf{geometric SIC boundary constraint} ensuring that the average channel distance condition $d_{UD2}[n] < d_{UD1}[n]$ is strictly maintained to preserve the SIC decoding order; C5 and C6 guarantee transmit power conservation and the mathematical feasibility threshold for successful SIC decoding at $D_2$.
+
+\subsection*{Optimization Algorithm Methods}
+
+Because problem \eqref{eq:opt_problem} is non-convex and involves complex non-linear Marcum-Q functions, this study investigates two comparative optimization paradigms:
+\begin{enumerate}
+    \item \textbf{Static Alternating Optimization Benchmark (Static AO Benchmark):} Evaluated at a nominal static snapshot location to analyze the convergence properties of the alternating iterations between UAV spatial coordinates and the power pair $(\alpha_1, \alpha_2)$, while verifying the analytical accuracy of the closed-form expressions against statistical Monte-Carlo simulations.
+    \item \textbf{Dynamic Time-Slotted Alternating Optimization (Dynamic Time-Slotted AO):} Extended across all $N = 10$ time slots, combining Sequential Quadratic Programming (SQP) for trajectory variables and Golden Section Search for power allocation. Because the problem is non-convex, the AO solution serves as the \textbf{Numerical Benchmark} for evaluating other algorithms.
+    \item \textbf{Real-Time Deep Reinforcement Learning Agent (Real-Time DRL Agent):} Implemented via a continuous Actor-Critic neural network \cite{lillicrap2015continuous}. The state vector at slot $n$ comprises current spatial coordinates, Euclidean distances to network nodes, and the SIC safety margin: $\mathbf{s}_n = [x_n, z_n, d_{UD1}, d_{UD2}, d_{US}, \Delta_{\text{target}}, d_{\text{sic\_margin}}]^T$. The continuous action vector consists of displacement velocity, flight angle, and power coefficient: $\mathbf{a}_n = [v_n, \theta_n, \alpha_1[n]]^T$. The logarithmic reward function $R_n = -\ln(OP_{\text{total}}[n] + 10^{-6}) - P_{\text{penalty}}$ is shaped to guide the agent toward immediate outage minimization without encountering vanishing gradients.
+\end{enumerate}

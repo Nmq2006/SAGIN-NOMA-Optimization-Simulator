@@ -1,0 +1,33 @@
+\section*{V. Thảo luận \& Đánh giá Chuyên sâu}
+
+\subsection*{Phân tích Hiện tượng Vật lý \& Ranh giới Hình học SIC}
+Kết quả tối ưu hóa quỹ đạo và công suất phản ánh tương quan vật lý giữa hình học không gian và cơ chế truyền thông NOMA:
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{Cơ chế cân bằng suy hao cự ly:} Để cực tiểu hóa xác suất dừng toàn mạng, UAV có xu hướng hạ thấp độ cao xuống giới hạn cho phép ($z_{\min} = 0.20$) và lượn về phía người dùng gần $D_2(1.0, 0)$. Việc tiếp cận $D_2$ mang lại hai lợi ích đồng thời: tăng cường mạnh mẽ độ lợi kênh $\bar{g}_2$ giúp quá trình tách tín hiệu và khử can nhiễu SIC đạt độ tin cậy rất cao, đồng thời cho phép UAV dồn phần lớn công suất phát ($\alpha_1^* \approx 0.78 - 0.83$) cho người dùng xa $D_1(1.5, 0)$ để bù đắp suy hao khoảng cách.
+    \item \textbf{Tính không tích cực (Inactive) của Ranh giới SIC tại điểm tối ưu:} Ràng buộc hình học $\text{C4}$ ($x \le 1.21$) bắt nguồn từ điều kiện duy trì thứ tự độ lợi kênh trung bình $\bar{g}_2 = d_{UD2}^{-\nu_{UD}} > \bar{g}_1 = d_{UD1}^{-\nu_{UD}}$, bảo đảm quá trình SIC không bị đảo ngược. Trên thực tế mô phỏng, nghiệm tối ưu của cả AO và DRL tự nhiên hội tụ tại hoành độ $x^* \approx 1.11$ (đối với AO tĩnh) và cực đại $x_{\max} \approx 1.15$ (đối với quỹ đạo động). Ràng buộc C4 ở trạng thái không tích cực (inactive constraint) tại điểm tối ưu: Khi UAV tiến xa hơn mốc $1.11$ về phía $D_1$, cự ly tới $D_1$ giảm nhưng cự ly tới $D_2$ tăng lên, khiến xác suất dừng giải mã SIC của $D_2$ tăng vọt. Hàm mục tiêu xác suất dừng toàn phần $OP_{\text{total}}$ tự động tạo ra một lực kéo cân bằng tự nhiên, giữ UAV ở vùng $x^* \in [1.10, 1.15]$ với khoảng cách đệm an toàn cách mép C4 từ $0.06$ đến $0.10$, bảo đảm $0.0\%$ vi phạm mà không bị ép sát vào biên vật lý.
+\end{itemize}
+
+\subsection*{Vai trò của Chặng Feeder Link (Vệ tinh $\to$ UAV) và Mô hình Kênh Truyền}
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{Đặc tính kênh Feeder Link có tầm nhìn thẳng cao (LoS):} Chặng 1 sử dụng liên kết vệ tinh truyền xuống cụm UAV với kênh fading Rician có tham số $K_{SU} = 5.0$ (độ lợi đường thẳng vượt trội so với tán xạ) kết hợp cơ chế chọn lọc chuyển tiếp phân tập 3-UAV (PRS). 
+    \item \textbf{Độ tin cậy chặng 1 áp đảo chặng 2:} Do có tầm nhìn thẳng và phân tập PRS trong cụm 3 UAV lân cận, xác suất dừng chặng 1 là cực nhỏ ($P_{\text{out}, \text{Hop1}} \approx 10^{-5}$ tại SNR $= 10$ dB và tiệm cận $10^{-9}$ tại SNR $= 20$ dB). Do đó, điểm nghẽn độ tin cậy của toàn bộ hệ thống SAGIN-NOMA tập trung hầu như hoàn toàn tại Chặng 2 (Access Link) — nơi UAV phải phân bổ công suất hữu hạn để phục vụ đồng thời hai người dùng mặt đất chịu fading Rician và can nhiễu NOMA. Quỹ đạo bay và phân bổ công suất tối ưu hóa chặng 2 do đó chi phối trực tiếp toàn bộ giá trị $OP_{\text{total}}$.
+    \item \textbf{Hệ tọa độ chuẩn hóa và thông số SNR:} Vị trí vệ tinh tại $(0, 1.0)$ được mô hình hóa trong hệ tọa độ không phận cục bộ đã được chuẩn hóa với cự ly tham chiếu $D_0 = 125$ m, biểu diễn hướng búp sóng vệ tinh góc đỉnh mang tính minh họa. Trục hoành trong các đồ thị SNR biểu thị mức tỉ số tín hiệu trên nhiễu phát chuẩn hóa chung $\rho = \bar{\gamma}_S = \bar{\gamma}_U$.
+\end{itemize}
+
+\subsection*{Đối sánh Học thuật giữa DRL và Thuật toán AO}
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{Vai trò tham chiếu chuẩn của AO và sự tiệm cận của DRL:} Do bài toán tối ưu quỹ đạo bay và phân bổ công suất \eqref{eq:opt_problem} là phi lồi (non-convex), thuật toán AO giải lặp SQP đóng vai trò là nghiệm tham chiếu số học chuẩn (numerical benchmark). Tác tử DRL đạt xác suất dừng $0.0197$, bám sát rất chặt chẽ nghiệm của AO ($0.0206$).
+    \item \textbf{Bản chất sự chênh lệch số liệu giữa hai phương pháp:} Phân tích kỹ thuật cho thấy sự chênh lệch nhỏ về xác suất dừng trung bình ($0.0197$ so với $0.0206$) bắt nguồn từ quy ước đánh giá khe thời gian:
+    (1) AO tính cả nút xuất phát cố định $q_1 = q_{\text{start}}(0.35, 0.50)$ nơi cự ly truyền thông xa nhất dẫn đến $OP[1] \approx 0.1008$;
+    (2) DRL bắt đầu tính $OP$ sau bước dịch chuyển đầu tiên ($n=1$ tại tọa độ $(0.47, 0.435)$) nên $OP[1] \approx 0.0672$.
+    Khi so sánh tại các khe hành trình ổn định ($n=5 \to 8$), thuật toán AO đạt xác suất dừng thành phần $OP \approx 0.0053$, nhỉnh hơn so với mức $0.0056 - 0.0060$ của DRL. Điều này khẳng định nghiệm số học SQP của AO thiết lập cận hiệu năng chuẩn, còn tác tử DRL đạt mức xấp xỉ tiệm cận rất sát.
+    \item \textbf{Ý nghĩa thực tiễn của Tốc độ Suy luận Siêu nhanh:} Trong kịch bản tiền định bất biến, thuật toán AO chỉ cần giải một lần ngoại tuyến ($1.85$ s) và lưu trữ quỹ đạo. Tuy nhiên, ưu thế vượt trội của DRL thể hiện rõ khi hệ thống vận hành trong môi trường biến động động học (ví dụ: tọa độ người dùng thay đổi, các điểm mốc nhiệm vụ bay dịch chuyển). Khi đó, giải thuật AO mất gần $2$ giây để giải lặp lại bài toán, gây gián đoạn chu kỳ điều khiển bay. Ngược lại, mạng Actor DRL chỉ mất $\mathbf{1.5}$ \textbf{ms/khe} để suy luận trực tiếp hành động thích ứng, bảo đảm điều khiển trực tuyến thời gian thực.
+\end{itemize}
+
+\subsection*{Hạn chế của Mô hình \& Đánh giá Khách quan}
+Để bảo đảm tính khách quan khoa học, nghiên cứu làm rõ các hạn chế hiện tại của mô hình:
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{Mô hình hình học 2D chuẩn hóa:} Không gian hoạt động được khảo sát trong mặt phẳng đứng $(Oxz)$ với cự ly chuẩn hóa $D_0 = 125$ m nhằm tập trung phân tích bản chất vật lý của tương quan độ cao - cự ly ngang và ranh giới SIC, chưa xét đến quỹ đạo 3D đầy đủ và độ cong mặt đất.
+    \item \textbf{Giả thiết kênh truyền tiền định:} Mô hình sử dụng các tham số fading Rician thống kê cố định, chưa mô phỏng tác động ngẫu nhiên của gió giật (wind gusts) làm lệch vị trí cơ học của UAV hoặc thông tin trạng thái kênh truyền không hoàn hảo (Imperfect CSI).
+    \item \textbf{Phạm vi huấn luyện mạng DRL:} Mô hình DDPG hiện tại được huấn luyện tại một mức SNR danh định ($20$ dB) với một seed ngẫu nhiên cố định (seed 42) nhằm bảo đảm tính tái lập kết quả (reproducibility). Việc mở rộng huấn luyện mạng tổng quát trên đa mức SNR và khảo sát qua nhiều seed độc lập là hướng đi cần thiết cho các nghiên cứu tiếp theo.
+\end{itemize}

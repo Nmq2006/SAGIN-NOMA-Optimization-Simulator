@@ -1,0 +1,36 @@
+# ==========================================
+# 1. MATLAB autosave & temporary files
+# ==========================================
+*.asv
+*.autosave
+*.mat.bak
+*.slxc
+
+# ==========================================
+# 2. LaTeX compile & build artifacts
+# ==========================================
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.nav
+*.snm
+*.vrb
+
+# ==========================================
+# 3. Application runtime exports
+# ==========================================
+SAGIN_NOMA_Simulator_APP/exports/*
+!SAGIN_NOMA_Simulator_APP/exports/.gitkeep
+
+# ==========================================
+# 4. OS generated files & caches
+# ==========================================
+Thumbs.db
+Desktop.ini
+.DS_Store

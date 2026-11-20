@@ -1,0 +1,127 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- Essential Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[vietnamese]{babel}
+\usepackage[top=1.8cm, bottom=2.0cm, left=2.0cm, right=2.0cm]{geometry}
+\usepackage{amsmath, amssymb, amsfonts, amsthm, mathtools}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{booktabs, multirow, makecell}
+\usepackage{algorithm, algpseudocode}
+\usepackage{siunitx}
+\usepackage[table]{xcolor}
+\usepackage{cite}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{tcolorbox}
+\usepackage{tikz}
+\usepackage{titlesec}
+\usepackage[colorlinks=true, linkcolor=blue!70!black, citecolor=red!70!black, urlcolor=blue!70!black]{hyperref}
+
+% --- Color Definitions matching template ---
+\definecolor{bannerbg}{HTML}{EBE3E0}      % Soft pastel taupe/rose banner
+\definecolor{logobg}{HTML}{222222}        % Dark charcoal square logo
+\definecolor{linecolor}{HTML}{D0C8C6}      % Subtle divider line
+\definecolor{tableheader}{HTML}{F5F5F5}   % Soft gray table header
+\definecolor{rulecolor}{HTML}{DDDDDD}     % Table grid rule
+
+% --- Section Formatting matching template ---
+\titleformat{\section}{\large\bfseries\color{black}}{}{0em}{}[\vspace{0.15cm}]
+\titlespacing*{\section}{0pt}{1.2ex plus .2ex minus .2ex}{0.8ex plus .1ex minus .1ex}
+
+\titleformat{\subsection}{\normalsize\bfseries\color{black}}{}{0em}{}
+\titlespacing*{\subsection}{0pt}{1.0ex plus .2ex minus .1ex}{0.5ex plus .1ex minus .1ex}
+
+% Custom section divider line
+\newcommand{\sectiondivider}{\vspace{0.25cm}\noindent{\color{linecolor}\rule{\textwidth}{0.6pt}}\vspace{0.25cm}}
+
+% Theorem and algorithm Vietnamese definitions
+\newtheorem{theorem}{Định lý}
+\newtheorem{lemma}{Bổ đề}
+\floatname{algorithm}{Thuật toán}
+\renewcommand{\algorithmicrequire}{\textbf{Đầu vào:}}
+\renewcommand{\algorithmicensure}{\textbf{Đầu ra:}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\linespread{1.12}
+
+\begin{document}
+
+% =========================================================================
+% TOP HEADER BANNER (Matching Template Style)
+% =========================================================================
+\noindent
+\begin{minipage}[t]{0.75\textwidth}
+    \textbf{Posts and Telecommunications Institute of Technology (PTIT)}\\
+    \textbf{Faculty of Telecommunications II}\\[0.12cm]
+    \small \textbf{Email:} \texttt{nmquan3108@gmail.com}
+\end{minipage}%
+\hfill
+
+\vspace{0.25cm}
+\hrule height 0.8pt
+\vspace{0.8cm}
+
+% =========================================================================
+% DOCUMENT TITLE (Matching Template Style)
+% =========================================================================
+\begin{center}
+    {\LARGE \textbf{Tối ưu hóa Đồng thời Quỹ đạo bay và Phân bổ Công suất trong Mạng SAGIN-NOMA:}\\[0.1cm]
+    \textbf{Từ Tối ưu hóa Luân phiên (AO) đến Học tăng cường sâu (DRL) Thời gian thực}}\\[0.25cm]
+\end{center}
+
+\vspace{0.2cm}
+\noindent{\color{linecolor}\rule{\textwidth}{0.6pt}}
+\vspace{0.3cm}
+
+% =========================================================================
+% MODULAR CONTENT SECTIONS
+% =========================================================================
+\input{sections/01_executive_summary}
+\sectiondivider
+
+\input{sections/02_introduction}
+\sectiondivider
+
+\input{sections/03_methodology}
+\sectiondivider
+
+\input{sections/04_results}
+\sectiondivider
+
+\input{sections/05_discussion}
+\sectiondivider
+
+\input{sections/06_conclusion}
+\sectiondivider
+
+\input{sections/07_recommendations}
+\sectiondivider
+
+\input{sections/08_appendices}
+\sectiondivider
+
+% =========================================================================
+% SIGN-OFF / AUTHOR CONTACT BLOCK (Matching Template Bottom Block)
+% =========================================================================
+\vspace{0.3cm}
+\noindent
+\begin{minipage}{0.95\textwidth}
+    \textbf{Người chuẩn bị (Prepared By):} Minh Quân\\
+    \textbf{Email liên hệ (Contact Email):} \texttt{nmquan3108@gmail.com}\\
+    \textbf{Điện thoại / Hotline (Phone Number):} (+84) 862-914-980\\
+    \textbf{Đơn vị công tác (Affiliation):} Khoa Viễn thông II, Học viện Công nghệ Bưu chính Viễn thông (PTIT)\\
+    \textbf{Địa chỉ (Address):} Đường Man Thiện, Phường Hiệp Phú, TP. Thủ Đức, TP. Hồ Chí Minh, Việt Nam
+\end{minipage}
+
+\vspace{0.6cm}
+% References
+\nocite{*}
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

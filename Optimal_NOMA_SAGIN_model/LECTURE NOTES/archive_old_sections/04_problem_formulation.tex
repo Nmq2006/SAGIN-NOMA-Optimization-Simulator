@@ -1,0 +1,33 @@
+\section{Problem Formulation}
+\label{sec:problem_formulation}
+% =========================================================================
+
+This work aims to achieve a joint optimization of system outage performance and service reliability assurance. In SAGIN, due to the continuous movement of LEO satellites and the dynamic mobility of aerial relays, the channel conditions between the UAV and ground users vary continuously across time slots. If the UAV drifts arbitrarily without geometric constraints, the relative channel dominance between ground terminals may invert, breaking the Successive Interference Cancellation (SIC) user-ordering condition. Therefore, we formulate the joint trajectory and power allocation optimization problem over $N$ discrete time slots. The optimization problem at the central controller can be formulated as follows:
+
+\begin{subequations}
+\label{eq:opt_problem}
+\begin{align}
+    \min_{\mathbf{Q}, \, \boldsymbol{\alpha}_1} \quad & \bar{P}_{\text{out}} = \frac{1}{N} \sum_{n=1}^N OP_{\text{total}}[n] \label{eq:obj} \\
+    \text{s.t.} \quad 
+    & \text{C1}: \mathbf{q}_{\min} \le \mathbf{q}_U[n] \le \mathbf{q}_{\max}, \quad \forall n \in \{1, \dots, N\}, \label{eq:c1} \\
+    & \text{C2}: \mathbf{q}_U[1] = \mathbf{q}_{\text{start}}, \quad \mathbf{q}_U[N] = \mathbf{q}_{\text{end}}, \label{eq:c2} \\
+    & \text{C3}: \|\mathbf{q}_U[n] - \mathbf{q}_U[n-1]\| \le V_{\max} \cdot dt, \quad \forall n \in \{2, \dots, N\}, \label{eq:c3} \\
+    & \text{C4}: \|\mathbf{q}_U[n] - \mathbf{q}_{D2}\| - \|\mathbf{q}_U[n] - \mathbf{q}_{D1}\| + \Delta_{\text{margin}} \le 0, \quad \forall n, \label{eq:c4} \\
+    & \text{C5}: \alpha_1[n] + \alpha_2[n] = 1, \quad \forall n, \label{eq:c5} \\
+    & \text{C6}: \alpha_1[n] \ge \frac{\gamma_{th1}}{1 + \gamma_{th1}} + \epsilon_{\text{sic}}, \quad \alpha_1[n] \le 1 - \epsilon_{\text{sic}}, \quad \forall n. \label{eq:c6}
+\end{align}
+\end{subequations}
+
+The objective is to minimize the overall system outage probability while ensuring transmission reliability through the joint optimization of UAV spatial waypoints and NOMA power allocation coefficients. Model parameters are defined as follows: $\mathbf{Q} = [\mathbf{q}_U[1], \dots, \mathbf{q}_U[N]]^T \in \mathbb{R}^{N \times 2}$ represents the UAV discrete 2D spatial trajectory; $\boldsymbol{\alpha}_1 = [\alpha_1[1], \dots, \alpha_1[N]]^T$ denotes the NOMA power allocation vector allocated to the far user $D_1$; $V_{\max}$ is the maximum flight velocity of the UAV platform; $dt = T/N$ is the slot duration; $\mathbf{q}_{\text{start}}$ and $\mathbf{q}_{\text{end}}$ denote the designated mission initial and terminal waypoints, respectively; $\gamma_{th1} = 2^{2R_1} - 1$ is the SINR decoding threshold for user $D_1$; and $\Delta_{\text{margin}} > 0$ is the geometric SIC safety margin.
+
+The corresponding constraints are interpreted as follows:
+\begin{itemize}
+    \item \textbf{C1} restricts the UAV position within the safe 2D flight corridor $[X_{\min}, X_{\max}] \times [Z_{\min}, Z_{\max}]$ to comply with aviation regulations and terrain clearance;
+    \item \textbf{C2} guarantees boundary waypoint compliance by anchoring the initial and terminal positions of the UAV at pre-scheduled mission coordinates;
+    \item \textbf{C3} restricts the displacement between any two adjacent time slots not to exceed the kinematic velocity limit $V_{\max} \cdot dt$;
+    \item \textbf{C4} represents the \textbf{Geometric SIC Boundary Constraint}, requiring that the distance from the UAV to near-user $D_2$ remains strictly shorter than that to far-user $D_1$ by at least $\Delta_{\text{margin}}$, thereby guaranteeing that the channel dominance $|h_{UD2}|^2 > |h_{UD1}|^2$ is maintained throughout the mission (approximated on the ground plane by $x_n \le x_{\text{sic\_bound}} = 1.21$);
+    \item \textbf{C5} specifies the total transmit power conservation for the superposed composite NOMA signal;
+    \item \textbf{C6} guarantees the mathematical feasibility condition of SIC decoding, ensuring that user $D_2$ and the UAV relay possess sufficient power margin to detect and cancel $x_1$ before recovering $x_2$.
+\end{itemize}
+
+% =========================================================================
