@@ -36,7 +36,7 @@ SAGIN-NOMA-Optimization-Simulator/
 │   │   ├── drl/                      # DRL (DDPG) agents & environment
 │   │   └── utils/                    # Marcum-Q, channel models, & SIC checkers
 │   ├── assets/                       # High-resolution benchmark figures
-│   ├── docs/                         # Technical reports & IEEE-style paper (PDF)
+│   ├── docs/                         # Technical reports (PDF)
 │   ├── LECTURE NOTES/                # Academic documentation (LaTeX - English)
 │   ├── LECTURE NOTES (Vie)/          # Academic documentation (LaTeX - Vietnamese)
 │   ├── run_all.m                     # Master batch execution script
